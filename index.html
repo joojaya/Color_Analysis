@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12-Season Color Analysis - Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /*
+        * 1. MAIN BACKGROUND (Login/Register/Quiz Pages)
+        * Applied to the body.
+        */
+        body {
+            color: black;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Light Blue Gray */
+            background-image: url("https://plus.unsplash.com/premium_photo-1751358174730-cda44d9ca3b1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDM4MXx8fGVufDB8fHx8fA%3D%3D");
+            background-size: cover;
+            background-attachment: fixed; /* Added to make the background stable */
+        }
+
+        /*
+        * 2. RESULT PAGE BACKGROUND
+        * Applied specifically to the result container.
+        */
+        #result-container {
+            background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); /* Light gradient background */
+            color: #333; /* Darker text for the light background */
+        }
+        
+        /* Ensures the text within the result container is dark for contrast */
+        #result-container h3, #result-container h4, #result-container p, #result-container li {
+            color: #333 !important;
+        }
+
+        /* Styles for specific elements in the result container that need to be visible against a light background */
+        #result-container #final-season {
+             color: #4f46e5 !important; /* Keep indigo for primary result */
+        }
+        
+        /* Style adjustments for the sub-sections in the results to ensure text is visible */
+        #result-container .space-y-3 p span {
+             color: #4f46e5 !important; /* Changed to Indigo for readability */
+        }
+        
+        /* Specific color correction for the "Colors to Avoid" heading */
+        #result-container div:nth-child(4) h4 {
+            color: #ef4444 !important; /* Red for avoidance */
+        }
+
+        /* Specific color correction for the "Consistent Personal Styling" heading and box */
+        #result-container h3:nth-child(5) {
+            color: #4f46e5 !important;
+        }
+        #res-personal-style-summary {
+            background-color: #e0e7ff; /* Light indigo box */
+            border-color: #a5b4fc;
+            color: #3730a3 !important;
+        }
+        #res-personal-style-summary p {
+            color: #3730a3 !important;
+        }
+
+        .step-card {
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            background-color: white; /* Ensure form card is white for readability over the image background */
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .result-swatch {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom Button Style */
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* Indigo-700 */
+            transform: translateY(-1px);
+        }
+        /* New Style for Logout Button */
+        .btn-logout {
+            background-color: #ef4444; /* Red-500 */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-logout:hover {
+            background-color: #dc2626; /* Red-600 */
+            transform: translateY(-1px);
+        }
+        /* New Style for Start Over Button */
+        .btn-secondary {
+            background-color: #6b7280; /* Gray-500 */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Gray-600 */
+            transform: translateY(-1px);
+        }
+        
+        /* NEW: Fixed position for Logout button */
+        #header-actions {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50; /* Ensure it stays above other content */
+        }
+
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .list-disc-styled li {
+            margin-left: 20px;
+            list-style: disc;
+        }
+        .list-unstyled li {
+            padding-left: 0;
+            list-style: none;
+        }
+        .form-input {
+            margin-top: 1px;
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+        }
+        .error-message {
+            color: #ef4444; /* Red-500 */
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
+    
+    <div id="header-actions" class="hidden">
+        <button onclick="logout()" class="btn-logout">Logout</button>
+    </div>
+    <div id="app" class="w-full max-w-4xl">
+        
+        <header class="mb-10 flex flex-col md:flex-row justify-between items-center text-center">
+            <div class="mb-4 md:mb-0 mx-auto">
+                <h1 class="text-4xl font-bold text-black-800 mb-2">Color Analyzer</h1>
+                <p class="text-xl font-bold text-black-700">The ultimate AI-powered personal color report.</p>
+            </div>
+        </header>
+        <div id="register-container" class="step-card p-6 md:p-10 w-full max-w-md mx-auto">
+            <h2 class="text-2xl font-semibold text-black-700 mb-6 text-center">Create Account </h2>
+            <p class="text-sm text-black-500 mb-6 text-center">Register to securely save your analysis data locally.</p>
+
+            <form id="register-form" onsubmit="return register()">
+                <div class="mb-4">
+                    <label for="reg-email" class="block text-sm font-medium text-black-800">Email Address</label>
+                    <input type="email" id="reg-email" name="reg-email" required 
+                           class="form-input">
+                </div>
+                <div class="mb-6">
+                    <label for="reg-password" class="block text-sm font-medium text-black-800">Password</label>
+                    <input type="password" id="reg-password" name="reg-password" required minlength="6"
+                           class="form-input">
+                </div>
+                <div id="register-error" class="error-message mb-4" style="display: none;"></div>
+
+                <button type="submit" class="w-full btn-primary">Register & Go to Login</button>
+            </form>
+            <p class="text-sm text-center text-black-600 mt-4">
+                Already have an account? 
+                <a href="#" onclick="showLogin()" class="text-indigo-600 hover:text-indigo-800 font-semibold">Login here</a>.
+            </p>
+        </div>
+        <div id="login-container" class="step-card p-6 md:p-10 w-full max-w-md mx-auto hidden">
+            <h2 class="text-2xl font-semibold text-black-700 mb-6 text-center">👋 Welcome Back</h2>
+            <p class="text-sm text-black-700 mb-10 text-center">Enter your registered details to begin your analysis.</p>
+
+            <form id="login-form" onsubmit="return login()">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-black-700">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           class="form-input">
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-black-700">Password</label>
+                    <input type="password" id="password" name="password" required
+                           class="form-input">
+                </div>
+                <div id="login-error" class="error-message mb-4" style="display: none;"></div>
+
+                <button type="submit" class="w-full btn-primary">Login to Analyzer</button>
+            </form>
+            <p class="text-sm text-center text-black-600 mt-4">
+                Don't have an account? 
+                <a href="#" onclick="showRegister()" class="text-indigo-700 hover:text-indigo-900 font-semibold">Register now</a>.
+            </p>
+        </div>
+        <div id="quiz-container" class="step-card p-6 md:p-10 hidden">
+            <div id="quiz-content">
+                <h2 id="step-title" class="text-2xl font-semibold text-black-700 mb-6"></h2>
+                
+                <div id="question-area">
+                    </div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <button id="prev-btn" onclick="prevStep()" class="text-gray-500 font-medium hover:text-black-700 transition duration-150" style="display: none;">&larr; Back</button>
+                    <button id="next-btn" onclick="nextStep()" class="w-full md:w-auto btn-primary" disabled>Analyze Photo &rarr;</button>
+                </div>
+            </div>
+            
+            <div id="loading-analysis" class="hidden flex flex-col items-center justify-center py-12">
+                <div class="loading-spinner mb-4"></div>
+                <p class="text-lg font-medium text-indigo-600">Analyzing your features</p>
+                <p class="text-sm text-black-500 mt-2">The AI is performing a Color Analysis based on your image.</p>
+            </div>
+        </div>
+
+        <div id="result-container" class="step-card p-6 md:p-10 mt-8 hidden">
+            <h2 class="text-3xl font-bold text-indigo-600 mb-6 text-center md:text-left">Your Personalized Color Report</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 items-start">
+                <div class="md:col-span-1 flex flex-col items-center">
+                    <h3 class="text-xl font-semibold text-black-800 mb-3">Analyzed Photo</h3>
+                    <img id="analyzed-image" class="w-full max-w-xs rounded-xl shadow-xl border-4 border-indigo-100" alt="Analyzed Photo">
+                </div>
+
+                <div class="md:col-span-2">
+                    <p class="text-xl font-semibold text-black-700 mb-4">
+                        Your Determined Season is: 
+                        <span id="final-season" class="text-indigo-600 font-extrabold block text-4xl mt-1"></span>
+                    </p>
+
+                    <div id="analysis-summary" class="p-4 bg-indigo-50 rounded-lg text-indigo-800 border border-indigo-200">
+                        <p class="font-semibold mb-1">AI Summary:</p>
+                        <p id="res-analysis-text" class="text-sm"></p>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="space-y-3">
+                    <h3 class="text-xl font-semibold text-white-700 border-b pb-1">Skin & Contrast</h3>
+                    <p class="text-white-700 text-sm"><span class="font-bold">Undertone:</span> <span id="res-skin-undertone" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-700 text-sm"><span class="font-bold">Overtone:</span> <span id="res-skin-overtone" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-700 text-sm"><span class="font-bold">Contrast Level:</span> <span id="res-overall-contrast-level" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-700 text-sm"><span class="font-bold">Cool/Warm Hue:</span> <span id="res-cool-warm" class="font-medium text-white-600"></span></p>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xl font-semibold text-white--600 border-b pb-1">Hair & Eyes</h3>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Hair Depth/Tone:</span> <span id="res-hair-depth-and-tone" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Natural Hair Color:</span> <span id="res-hair-color" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Eye Clarity:</span> <span id="res-eye-color-clarity-and-contrast" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Eye Profile:</span> <span id="res-eye-color" class="font-medium text-white-600"></span></p>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-xl font-semibold text-white-600 border-b pb-1">Palette Summary</h3>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Chroma/Clarity:</span> <span id="res-chroma-clarity" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Jewelry Focus:</span> <span id="res-jewelry" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Metal Types:</span> <span id="res-accessory-metal-types" class="font-medium text-white-600"></span></p>
+                    <p class="text-white-600 text-sm"><span class="font-bold">Stone Colors:</span> <span id="res-accessory-stone-colors" class="font-medium text-white-600"></span></p>
+                </div>
+            </div>
+
+            <hr class="my-6">
+
+            <h3 class="text-2xl font-bold text-white-600 mb-4">Your Primary Color Palette</h3>
+            <div id="palette-display" class="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-8">
+                </div>
+
+            <hr class="my-6">
+
+            <h3 class="text-2xl font-bold text-white-600 mb-4">Detailed Style Recommendations</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-black-700 mb-2">Key Palette Focus 🎨</h4>
+                    <p class="text-sm font-semibold text-white-600">Best Neutrals:</p>
+                    <ul id="res-best-neutrals" class="text-white-600 list-unstyled space-y-1 text-sm mb-3"></ul>
+                    
+                    <p class="text-sm font-semibold text-black-700">Best Accent Colors:</p>
+                    <ul id="res-best-accent-colors" class="text-white-600 list-unstyled space-y-1 text-sm"></ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold black-700 mb-2">Wardrobe Planning 🧥</h4>
+                    <p class="text-sm font-semibold text-white-700">Suggested Color Families:</p>
+                    <ul id="res-wardrobe-families" class="text-white-600 list-disc-styled space-y-1 text-sm mb-3"></ul>
+                    
+                    <p class="text-sm font-semibold text-white-700">Key Wardrobe Pieces:</p>
+                    <ul id="res-wardrobe-pieces" class="text-white-600 list-disc-styled space-y-1 text-sm"></ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-black-700 mb-2">Makeup Shade Guide 💄</h4>
+                    <ul id="res-makeup-guide" class="text-white-600 list-disc-styled space-y-1 text-sm">
+                        </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-yellow-700 mb-2">🚫 Colors to Avoid</h4>
+                    <ul id="res-colors-to-avoid" class="text-white-600 list-disc-styled space-y-1 text-sm">
+                        </ul>
+                </div>
+            </div>
+
+            <hr class="my-6">
+
+            <h3 class="text-2xl font-bold text-yellow-700 mb-4">Consistent Personal Styling</h3>
+            <div id="res-personal-style-summary" class="p-4 bg-pink-70 rounded-lg text-gray-700 border border-gray-200">
+                <p class="text-sm font-medium"></p>
+            </div>
+
+
+            <p class="text-sm text-yellow-500 mt-6">
+                *The AI analysis uses your image. For professional results, consult a certified color analyst.
+            </p>
+            
+            <div class="mt-8 text-center">
+                <button onclick="startOver()" class="btn-secondary">Start New Analysis</button>
+            </div>
+            </div>
+    </div>
+
+    <script>
+        // --- CONFIG & DATA (Unchanged) ---
+        const API_KEY = "AIzaSyCGsCjY7OQYIv7luNiAE7DJh3-sKlpVLE0";
+        const MODEL_NAME = 'gemini-2.5-flash-preview-09-2025';
+
+        const PALETTES = {
+            'Cool Winter': { colors: ['#003366', '#007AA5', '#C0C0C0', '#F7005B', '#000000'] },
+            'Deep Winter': { colors: ['#1C3144', '#4B0082', '#008080', '#D4AF37', '#FFFFFF'] },
+            'Bright Winter': { colors: ['#FF0000', '#00FFFF', '#8B00FF', '#3CB371', '#C0C0C0'] },
+            'Cool Summer': { colors: ['#5E7295', '#A9A9A9', '#B0E0E6', '#F08080', '#F5F5DC'] },
+            'Light Summer': { colors: ['#BDB76B', '#ADD8E6', '#DDA0DD', '#F0F8FF', '#87CEFA'] },
+            'Soft Summer': { colors: ['#808080', '#9370DB', '#8FBC8F', '#C8A2C8', '#D3D3D3'] },
+            'Warm Autumn': { colors: ['#A0522D', '#D2B48C', '#8B4513', '#FFD700', '#2E8B57'] },
+            'Deep Autumn': { colors: ['#556B2F', '#8B0000', '#A9A9A9', '#483C32', '#B8860B'] },
+            'Soft Autumn': { colors: ['#BC8F8F', '#D2B38C', '#B8860B', '#F5DEB3', '#696969'] },
+            'Warm Spring': { colors: ['#FFD700', '#FFA500', '#7FFF00', '#FF69B4', '#F0E68C'] },
+            'Light Spring': { colors: ['#FFDAB9', '#FAEBD7', '#FF7F50', '#FFFFE0', '#ADD8E6'] },
+            'Bright Spring': { colors: ['#FF4500', '#00FF7F', '#FFD700', '#4169E1', '#E6E6FA'] }
+        };
+
+        const QUIZ_STEPS = [
+            {
+                id: 0,
+                title: "Upload Your Photo",
+                description: "To get the most accurate results, please ensure your photo meets these criteria:",
+                key: 'image',
+                isImageStep: true
+            }
+        ];
+
+        let currentStep = 0;
+        let imageBase64 = null;
+        
+        // --- 4. CORE LOGIC (AI Analysis - Unchanged) ---
+        async function analyzeImageAndAnswers() {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+            
+            const systemPrompt = `You are a world-class personal color analyst specializing in the 12-Season Flow system. Analyze the provided image *only* and provide a detailed report in the requested JSON format. Your primary goal is to determine the most likely 12-Season type and provide granular feature analysis.`;
+            
+            const userQuery = `Analyze the person's coloring using the 12-Season system based on the image. Provide a highly detailed feature breakdown (skin undertone/overtone, hair depth/tone, eye clarity/contrast, overall contrast). Determine the Final Season and provide comprehensive recommendations for best neutrals, accent colors, wardrobe planning, accessories, makeup, and colors to avoid.`;
+
+            const payload = {
+                contents: [
+                    {
+                        role: "user",
+                        parts: [
+                            { text: userQuery },
+                            {
+                                inlineData: {
+                                    mimeType: "image/jpeg",
+                                    data: imageBase64
+                                }
+                            }
+                        ]
+                    }
+                ],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "finalSeason": { "type": "STRING", "description": "The determined 12-Season classification (e.g., 'Deep Autumn', 'Light Spring')." },
+                            "skinUndertone": { "type": "STRING", "description": "Skin undertone (Cool, Warm, or Neutral)." },
+                            "skinOvertone": { "type": "STRING", "description": "Skin overtone or surface color (e.g., Ivory, Beige, Olive)." },
+                            "hairDepthAndTone": { "type": "STRING", "description": "Hair color depth and tone (e.g., Deep Cool Black, Light Warm Gold)." },
+                            "eyeColorClarityAndContrast": { "type": "STRING", "description": "Eye color clarity (Clear/Sparkling, Soft/Muted) and contrast with the skin/hair." },
+                            "overallContrastLevel": { "type": "STRING", "description": "The overall level of contrast between the hair, skin, and eyes (High, Medium, Low)." },
+                            "chromaClarity": { "type": "STRING", "description": "Overall clarity/intensity (Bright/Clear, or Soft/Muted)." },
+                            "coolWarmPercentage": { "type": "STRING", "description": "Estimate of Cool/Warm balance (e.g., '70% Warm / 30% Cool')." },
+                            "eyeColorClassification": { "type": "STRING", "description": "Detailed description of eye color." },
+                            "recommendedHair": { "type": "STRING", "description": "Suggested best hair color based on the season (e.g., 'Cool Ash Blonde, Deep Chocolate')." },
+                            "recommendedJewelry": { "type": "STRING", "description": "Primary jewelry metals and materials (legacy field)." },
+                            "accessoryMetalTypes": { "type": "STRING", "description": "Best metal types (Silver, Gold, Rose Gold, Platinum)." },
+                            "accessoryStoneColors": { "type": "STRING", "description": "Best stone colors/materials (e.g., Deep blues, Emerald, Coral, Pearl)." },
+                            "bestNeutrals": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "List of 3-5 best neutral colors (e.g., Navy, Charcoal, Taupe)." },
+                            "bestAccentColors": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "List of 3-5 best accent colors (e.g., Fuchsia, True Red, Mint Green)." },
+                            "clothingPaletteFocus": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "General clothing recommendations (Best neutrals, best brights, colors to avoid - legacy field)." },
+                            "wardrobeSuggestedColorFamilies": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "Suggested color families for wardrobe planning (e.g., Jewel Tones, Earth Tones)." },
+                            "wardrobeKeyPieces": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "Key wardrobe pieces to own in the season's best colors (e.g., Crisp white shirt, Cashmere sweater)." },
+                            "makeupShadeGuide": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "Specific makeup shade recommendations (Foundation hue, blush, lipstick, eyeshadow)." },
+                            "colorsToAvoid": { "type": "ARRAY", "items": { "type": "STRING" }, "description": "Colors that should be avoided as they conflict with the determined season and coloring." },
+                            "analysisText": { "type": "STRING", "description": "A short, two-sentence textual summary of the finding and key characteristics (legacy field)." },
+                            "personalStyleSummary": { "type": "STRING", "description": "A paragraph summarizing the findings and providing a recommendation for consistent personal styling using the color palette." }
+                        },
+                        "required": [
+                            "finalSeason", "skinUndertone", "skinOvertone", "hairDepthAndTone",
+                            "eyeColorClarityAndContrast", "overallContrastLevel", "chromaClarity",
+                            "coolWarmPercentage", "eyeColorClassification", "recommendedHair",
+                            "accessoryMetalTypes", "accessoryStoneColors", "bestNeutrals",
+                            "bestAccentColors", "wardrobeSuggestedColorFamilies", "wardrobeKeyPieces",
+                            "makeupShadeGuide", "colorsToAvoid", "personalStyleSummary", "analysisText"
+                        ]
+                    }
+                }
+            };
+
+            const maxRetries = 5;
+            let delay = 1000;
+            
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0) {
+                        const jsonString = result.candidates[0].content.parts[0].text;
+                        return JSON.parse(jsonString);
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${i + 1} failed:`, error);
+                    if (i < maxRetries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2;
+                    } else {
+                        throw new Error("Failed to get analysis after multiple retries.");
+                    }
+                }
+            }
+        }
+
+        // --- 5. IMAGE AND UI HANDLERS (Unchanged) ---
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                imageBase64 = null;
+                document.getElementById('next-btn').disabled = true;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imageBase64 = e.target.result.split(',')[1];
+                document.getElementById('next-btn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderStep(stepIndex) {
+            if (stepIndex >= QUIZ_STEPS.length) {
+                showResults();
+                return;
+            }
+
+            const step = QUIZ_STEPS[stepIndex];
+            const questionArea = document.getElementById('question-area');
+            const stepTitle = document.getElementById('step-title');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            stepTitle.innerHTML = `${step.title}<p class="text-base font-normal text-gray-500 mt-1">${step.description}</p>`;
+            prevBtn.style.display = 'none';
+            
+            nextBtn.disabled = true;
+
+            const uploadInstructions = `
+                <ul class="text-gray-600 list-disc-styled space-y-2 mb-6">
+                    <li><span class="font-semibold">Natural daylight:</span> Photo must be taken facing a window, in natural daylight (not yellow indoor light).</li>
+                    <li><span class="font-semibold">No makeup or filters:</span> Features must be bare and unaltered.</li>
+                    <li><span class="font-semibold">Hair away from face:</span> Pin back hair to clearly show the neck and hairline.</li>
+                    <li><span class="font-semibold">Neutral background:</span> Plain wall or light sheet is ideal.</li>
+                </ul>
+            `;
+            
+            if (step.isImageStep) {
+                questionArea.innerHTML = `
+                    ${uploadInstructions}
+                    <div class="space-y-4">
+                        <input type="file" accept="image/*" id="image-input" class="block w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-indigo-50 file:text-indigo-700
+                            hover:file:bg-indigo-100"
+                            onchange="handleImageUpload(event)">
+                        <div class="text-xs text-red-500 font-medium">
+                            Upload required to continue.
+                        </div>
+                    </div>
+                `;
+                if (imageBase64) nextBtn.disabled = false;
+            }
+        }
+
+        function nextStep() {
+            if (currentStep === 0 && imageBase64) {
+                currentStep++;
+                showResults();
+            }
+        }
+
+        async function showResults() {
+            // Show logout button on quiz/result pages
+            document.getElementById('header-actions').classList.remove('hidden');
+            
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.getElementById('loading-analysis').classList.remove('hidden');
+
+            try {
+                const aiAnalysis = await analyzeImageAndAnswers();
+                const finalSeason = aiAnalysis.finalSeason;
+                
+                if (!PALETTES[finalSeason]) {
+                    throw new Error(`AI returned an unrecognized season: ${finalSeason}`);
+                }
+                const paletteData = PALETTES[finalSeason];
+
+                document.getElementById('quiz-container').classList.add('hidden');
+                document.getElementById('result-container').classList.remove('hidden');
+
+                document.getElementById('final-season').textContent = finalSeason;
+                document.getElementById('analyzed-image').src = `data:image/jpeg;base64,${imageBase64}`;
+
+                document.getElementById('res-cool-warm').textContent = aiAnalysis.coolWarmPercentage;
+                document.getElementById('res-skin-undertone').textContent = aiAnalysis.skinUndertone;
+                document.getElementById('res-skin-overtone').textContent = aiAnalysis.skinOvertone;
+                document.getElementById('res-overall-contrast-level').textContent = aiAnalysis.overallContrastLevel;
+                document.getElementById('res-chroma-clarity').textContent = aiAnalysis.chromaClarity;
+                document.getElementById('res-eye-color').textContent = aiAnalysis.eyeColorClassification;
+                document.getElementById('res-eye-color-clarity-and-contrast').textContent = aiAnalysis.eyeColorClarityAndContrast;
+                document.getElementById('res-hair-color').textContent = aiAnalysis.recommendedHair;
+                document.getElementById('res-hair-depth-and-tone').textContent = aiAnalysis.hairDepthAndTone;
+                document.getElementById('res-jewelry').textContent = aiAnalysis.recommendedJewelry;
+                document.getElementById('res-accessory-metal-types').textContent = aiAnalysis.accessoryMetalTypes;
+                document.getElementById('res-accessory-stone-colors').textContent = aiAnalysis.accessoryStoneColors;
+                document.getElementById('res-analysis-text').textContent = aiAnalysis.analysisText;
+                document.querySelector('#res-personal-style-summary p').textContent = aiAnalysis.personalStyleSummary;
+
+                const renderList = (elementId, items) => {
+                    const ul = document.getElementById(elementId);
+                    if (!ul) {
+                        console.error(`List element with ID ${elementId} not found.`);
+                        return;
+                    }
+                    ul.innerHTML = '';
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        ul.appendChild(li);
+                    });
+                };
+                
+                renderList('res-best-neutrals', aiAnalysis.bestNeutrals);
+                renderList('res-best-accent-colors', aiAnalysis.bestAccentColors);
+                renderList('res-wardrobe-families', aiAnalysis.wardrobeSuggestedColorFamilies);
+                renderList('res-wardrobe-pieces', aiAnalysis.wardrobeKeyPieces);
+                renderList('res-makeup-guide', aiAnalysis.makeupShadeGuide);
+                renderList('res-colors-to-avoid', aiAnalysis.colorsToAvoid);
+
+                const paletteDisplay = document.getElementById('palette-display');
+                paletteDisplay.innerHTML = '';
+                
+                paletteData.colors.forEach(color => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'result-swatch flex items-end justify-center text-xs font-semibold p-1';
+                    swatch.style.backgroundColor = color;
+                    
+                    const hexColor = color.substring(1);
+                    const r = parseInt(hexColor.substring(0, 2), 16);
+                    const g = parseInt(hexColor.substring(2, 4), 16);
+                    const b = parseInt(hexColor.substring(4, 6), 16);
+                    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                    swatch.style.color = luma < 128 ? 'white' : '#333';
+                    
+                    swatch.textContent = color.toUpperCase();
+                    paletteDisplay.appendChild(swatch);
+                });
+
+            } catch (e) {
+                console.error("Analysis Error:", e);
+                document.getElementById('loading-analysis').classList.add('hidden');
+                document.getElementById('quiz-content').classList.remove('hidden');
+                
+                const errorDisplay = document.getElementById('question-area');
+                errorDisplay.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Analysis Failed!</strong>
+                    <span class="block sm:inline">Could not complete the color analysis. This usually means the image was too dark, blurry, or the API call timed out. Please refresh and ensure your photo is clear and well-lit.</span>
+                    </div>
+                `;
+                document.getElementById('next-btn').disabled = true;
+                currentStep = 0;
+            }
+        }
+
+        // --- NEW FUNCTIONALITY ---
+
+        function logout() {
+            // Clear login-related data
+            localStorage.removeItem('isLoggedIn');
+            // Reset application state
+            currentStep = 0;
+            imageBase64 = null;
+            
+            // Hide everything and navigate to the login page (which handles the display)
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-container').classList.add('hidden');
+            document.getElementById('header-actions').classList.add('hidden'); 
+            
+            showLogin();
+        }
+
+        function startOver() {
+            // Reset analysis state
+            currentStep = 0;
+            imageBase64 = null;
+            
+            // Hide results and show the quiz/upload page
+            document.getElementById('result-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            
+            // Re-render the initial step (image upload)
+            renderStep(currentStep);
+            
+            // Clear the file input visually
+            const imageInput = document.getElementById('image-input');
+            if (imageInput) imageInput.value = '';
+        }
+
+        // --- LOGIN/REGISTER FUNCTIONS ---
+
+        function register() {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const errorDisplay = document.getElementById('register-error');
+
+            if (localStorage.getItem('userEmail')) {
+                errorDisplay.textContent = "An account already exists. Please log in.";
+                errorDisplay.style.display = 'block';
+                return false;
+            }
+
+            // Mock registration: Save credentials to Local Storage
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userPassword', password);
+            
+            alert("Registration successful! You can now log in.");
+            showLogin();
+            return false;
+        }
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDisplay = document.getElementById('login-error');
+
+            const storedEmail = localStorage.getItem('userEmail');
+            const storedPassword = localStorage.getItem('userPassword');
+
+            if (email === storedEmail && password === storedPassword && storedEmail && storedPassword) {
+                errorDisplay.style.display = 'none';
+                localStorage.setItem('isLoggedIn', 'true'); // Set a logged-in flag
+                showAnalyzer();
+            } else {
+                errorDisplay.textContent = "Invalid email or password. Please check your details or register.";
+                errorDisplay.style.display = 'block';
+            }
+            return false;
+        }
+
+
+        function showAnalyzer() {
+            // Ensure login/register/result forms are hidden
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('register-container').classList.add('hidden'); 
+            document.getElementById('result-container').classList.add('hidden');
+            
+            // Show quiz/analyzer sections
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            document.getElementById('header-actions').classList.remove('hidden'); // Show logout button
+            renderStep(currentStep);
+        }
+
+        function showLogin() {
+            // Hide register and analysis pages
+            document.getElementById('register-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.add('hidden'); 
+            document.getElementById('result-container').classList.add('hidden');
+
+            // Show login page
+            document.getElementById('login-container').classList.remove('hidden');
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('header-actions').classList.add('hidden'); // Hide logout button
+        }
+
+        function showRegister() {
+            // Hide login and analysis pages
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.add('hidden'); 
+            document.getElementById('result-container').classList.add('hidden');
+
+            // Show register page
+            document.getElementById('register-container').classList.remove('hidden');
+            document.getElementById('register-error').style.display = 'none';
+            document.getElementById('header-actions').classList.add('hidden'); // Hide logout button
+        }
+
+        // Initialize the app
+        window.onload = () => {
+             // Check if user is registered at all
+             if (localStorage.getItem('userEmail')) {
+                // If registered and has a logged-in flag (for refreshing during a session), show analyzer
+                if (localStorage.getItem('isLoggedIn') === 'true') {
+                    showAnalyzer();
+                } else {
+                    showLogin();
+                }
+             } else {
+                showRegister();
+             }
+        };
+    </script>
+</body>
+</html>
