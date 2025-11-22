@@ -1,0 +1,27 @@
+This project is an AI-powered Color Analysis Web App that determines a user’s seasonal palette based on their facial features 
+and image characteristics.The application provides an automated 12-season color analysis, commonly used in styling and 
+personal fashion recommendations.The system analyzes undertones, value, contrast, and chroma extracted directly from the
+uploaded image.The app uses Gemini Vision AI, which processes the photo and returns structured color analysis output.
+The user interface is fully built using HTML, CSS, JavaScript, and TailwindCSS for a clean, modern layout.
+A multi-step workflow guides the user through account creation, login, image upload, and final analysis.
+The application supports client-side authentication, allowing users to register and log in securely.
+The AI model returns details such as season type, best color palette, contrast level, and undertone clarity.
+Results are rendered visually with a curated palette grid, showing ideal colors for the user.
+The app features a loading animation during analysis to improve user experience.
+A structured JSON output from the AI is parsed and displayed dynamically on the result page.
+Users can restart the analysis at any time through the Start Over feature.The design uses responsive components 
+optimized for both mobile and desktop screens.All styling elements—including shadows, rounded cards, spacing,
+and typography—are built using Tailwind’s utility classes.The app loads images in base64 format enabling fast AI 
+communication and processing.No backend processing is required as the AI calls are executed entirely on the client-side 
+JavaScript layer.The project uses fetch() API to send the user photo to the Gemini endpoint.The system ensures error handling 
+for missing images, invalid uploads, or API failures.The app uses modern Web Development principles like DOM Manipulation,
+modular functions, and async/await programming patterns.File uploads are previewed directly in the UI for user clarity before analysis.
+Workflow & Client Logic
+
+Async/Await + Fetch API – For smooth, asynchronous AI requests.
+
+Base64 Encoding – Sends images securely and reliably to the AI model.
+
+Dynamic Rendering – Generates palette blocks, results, and explanations on the fly.
+
+Local Storage – Stores user session data (optional feature).
