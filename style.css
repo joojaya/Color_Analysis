@@ -1,0 +1,43 @@
+/* Your entire CSS placed here exactly as in your file */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+    background-image: url("https://plus.unsplash.com/premium_photo-1751358174730-cda44d9ca3b1?w=600");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.step-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: red;
+    font-size: 13px;
+}
