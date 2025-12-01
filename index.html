@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>12-Season Color Analysis - Register</title>
+    <title>12-Season Color Analysis - Start</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -100,23 +100,7 @@
             background-color: #4338ca; /* Indigo-700 */
             transform: translateY(-1px);
         }
-        /* New Style for Logout Button */
-        .btn-logout {
-            background-color: #ef4444; /* Red-500 */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-        }
-        .btn-logout:hover {
-            background-color: #dc2626; /* Red-600 */
-            transform: translateY(-1px);
-        }
-        /* New Style for Start Over Button */
+        /* New Style for Start Over Button (Now Primary Action) */
         .btn-secondary {
             background-color: #6b7280; /* Gray-500 */
             color: white;
@@ -133,15 +117,6 @@
             transform: translateY(-1px);
         }
         
-        /* NEW: Fixed position for Logout button */
-        #header-actions {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50; /* Ensure it stays above other content */
-        }
-
-
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             border-top: 4px solid #4f46e5;
@@ -186,9 +161,6 @@
 </head>
 <body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
     
-    <div id="header-actions" class="hidden">
-        <button onclick="logout()" class="btn-logout">Logout</button>
-    </div>
     <div id="app" class="w-full max-w-4xl">
         
         <header class="mb-10 flex flex-col md:flex-row justify-between items-center text-center">
@@ -197,66 +169,16 @@
                 <p class="text-xl font-bold text-black-700">The ultimate AI-powered personal color report.</p>
             </div>
         </header>
-        <div id="register-container" class="step-card p-6 md:p-10 w-full max-w-md mx-auto">
-            <h2 class="text-2xl font-semibold text-black-700 mb-6 text-center">Create Account </h2>
-            <p class="text-sm text-black-500 mb-6 text-center">Register to securely save your analysis data locally.</p>
-
-            <form id="register-form" onsubmit="return register()">
-                <div class="mb-4">
-                   <label for="username">Username</label>
-                   <input type="text" id="username" name="username" required minlenght="6"
-                          class="form-input">
-
-                </div>
-                <div class="mb-6">
-                    <label for="reg-password" class="block text-sm font-medium text-black-800">Password</label>
-                    <input type="password" id="reg-password" name="reg-password" required minlength="6"
-                           class="form-input">
-                </div>
-                <div id="register-error" class="error-message mb-4" style="display: none;"></div>
-
-                <button type="submit" class="w-full btn-primary">Register & Go to Login</button>
-            </form>
-            <p class="text-sm text-center text-black-600 mt-4">
-                Already have an account? 
-                <a href="#" onclick="showLogin()" class="text-indigo-600 hover:text-indigo-800 font-semibold">Login here</a>.
-            </p>
-        </div>
-        <div id="login-container" class="step-card p-6 md:p-10 w-full max-w-md mx-auto hidden">
-            <h2 class="text-2xl font-semibold text-black-700 mb-6 text-center">👋 Welcome Back</h2>
-            <p class="text-sm text-black-700 mb-10 text-center">Enter your registered details to begin your analysis.</p>
-
-            <form id="login-form" onsubmit="return login()">
-                <div class="mb-4">
-                   <label for="reg-username">Username</label>
-                   <input type="text" id="reg-username" name="reg-username" required 
-                          class="form-input">
-
-                </div>
-                <div class="mb-6">
-                    <label for="password" class="block text-sm font-medium text-black-700">Password</label>
-                    <input type="password" id="password" name="password" required
-                           class="form-input">
-                </div>
-                <div id="login-error" class="error-message mb-4" style="display: none;"></div>
-
-                <button type="submit" class="w-full btn-primary">Login to Analyzer</button>
-            </form>
-            <p class="text-sm text-center text-black-600 mt-4">
-                Don't have an account? 
-                <a href="#" onclick="showRegister()" class="text-indigo-700 hover:text-indigo-900 font-semibold">Register now</a>.
-            </p>
-        </div>
-        <div id="quiz-container" class="step-card p-6 md:p-10 hidden">
+        
+        <div id="quiz-container" class="step-card p-6 md:p-10 w-full max-w-xl mx-auto">
             <div id="quiz-content">
-                <h2 id="step-title" class="text-2xl font-semibold text-black-700 mb-6"></h2>
+                <h2 id="step-title" class="text-2xl font-semibold text-black-700 mb-6 text-center"></h2>
                 
                 <div id="question-area">
-                    </div>
+                </div>
 
-                <div class="mt-8 flex justify-between items-center">
-                    <button id="prev-btn" onclick="prevStep()" class="text-gray-500 font-medium hover:text-black-700 transition duration-150" style="display: none;">&larr; Back</button>
-                    <button id="next-btn" onclick="nextStep()" class="w-full md:w-auto btn-primary" disabled>Analyze Photo &rarr;</button>
+                <div class="mt-8 flex justify-end items-center">
+                    <button id="next-btn" onclick="nextStep()" class="w-full btn-primary" disabled>Analyze Photo &rarr;</button>
                 </div>
             </div>
             
@@ -327,7 +249,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 
                 <div>
-                    <h4 class="text-lg font-semibold text-black-700 mb-2">Key Palette Focus 🎨</h4>
+                    <h4 class="text-lg font-semibold text-black-700 mb-2">Key Palette Focus 💡</h4>
                     <p class="text-sm font-semibold text-white-600">Best Neutrals:</p>
                     <ul id="res-best-neutrals" class="text-white-600 list-unstyled space-y-1 text-sm mb-3"></ul>
                     
@@ -336,7 +258,7 @@
                 </div>
                 
                 <div>
-                    <h4 class="text-lg font-semibold black-700 mb-2">Wardrobe Planning 🧥</h4>
+                    <h4 class="text-lg font-semibold black-700 mb-2">Wardrobe Planning 👗</h4>
                     <p class="text-sm font-semibold text-white-700">Suggested Color Families:</p>
                     <ul id="res-wardrobe-families" class="text-white-600 list-disc-styled space-y-1 text-sm mb-3"></ul>
                     
@@ -351,7 +273,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-semibold text-yellow-700 mb-2">🚫 Colors to Avoid</h4>
+                    <h4 class="text-lg font-semibold text-red-500 mb-2">❌ Colors to Avoid</h4>
                     <ul id="res-colors-to-avoid" class="text-white-600 list-disc-styled space-y-1 text-sm">
                         </ul>
                 </div>
@@ -359,25 +281,25 @@
 
             <hr class="my-6">
 
-            <h3 class="text-2xl font-bold text-yellow-700 mb-4">Consistent Personal Styling</h3>
+            <h3 class="text-2xl font-bold text-indigo-600 mb-4">Consistent Personal Styling</h3>
             <div id="res-personal-style-summary" class="p-4 bg-pink-70 rounded-lg text-gray-700 border border-gray-200">
                 <p class="text-sm font-medium"></p>
             </div>
 
 
-            <p class="text-sm text-yellow-500 mt-6">
+            <p class="text-sm text-gray-500 mt-6">
                 *The AI analysis uses your image. For professional results, consult a certified color analyst.
             </p>
             
             <div class="mt-8 text-center">
-                <button onclick="startOver()" class="btn-secondary">Start New Analysis</button>
+                <button onclick="startOver()" class="btn-primary">Start New Analysis</button>
             </div>
             </div>
     </div>
 
     <script>
         // --- CONFIG & DATA (Unchanged) ---
-        const API_KEY = "AIzaSyCGsCjY7OQYIv7luNiAE7DJh3-sKlpVLE0";
+        const API_KEY = "AIzaSyAhoS2islN7ppVNIpvDsC5UsC66NlNu9OQ";
         const MODEL_NAME = 'gemini-2.5-flash-preview-09-2025';
 
         const PALETTES = {
@@ -398,8 +320,8 @@
         const QUIZ_STEPS = [
             {
                 id: 0,
-                title: "Upload Your Photo",
-                description: "To get the most accurate results, please ensure your photo meets these criteria:",
+                title: "Welcome! Start Your AI Color Analysis",
+                description: "Upload a clear photo to determine your personal 12-Season color type.",
                 key: 'image',
                 isImageStep: true
             }
@@ -507,7 +429,7 @@
             }
         }
 
-        // --- 5. IMAGE AND UI HANDLERS (Unchanged) ---
+        // --- 5. IMAGE AND UI HANDLERS (Modified) ---
         function handleImageUpload(event) {
             const file = event.target.files[0];
             if (!file) {
@@ -533,11 +455,11 @@
             const step = QUIZ_STEPS[stepIndex];
             const questionArea = document.getElementById('question-area');
             const stepTitle = document.getElementById('step-title');
-            const prevBtn = document.getElementById('prev-btn');
+            // const prevBtn = document.getElementById('prev-btn'); // Removed
             const nextBtn = document.getElementById('next-btn');
 
             stepTitle.innerHTML = `${step.title}<p class="text-base font-normal text-gray-500 mt-1">${step.description}</p>`;
-            prevBtn.style.display = 'none';
+            // prevBtn.style.display = 'none'; // Removed
             
             nextBtn.disabled = true;
 
@@ -578,8 +500,7 @@
         }
 
         async function showResults() {
-            // Show logout button on quiz/result pages
-            document.getElementById('header-actions').classList.remove('hidden');
+            // No logout button to show/hide
             
             document.getElementById('quiz-content').classList.add('hidden');
             document.getElementById('loading-analysis').classList.remove('hidden');
@@ -663,7 +584,7 @@
                 errorDisplay.innerHTML = `
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                     <strong class="font-bold">Analysis Failed!</strong>
-                    <span class="block sm:inline">Could not complete the color analysis. This usually means the image was too dark, blurry, or the API call timed out. Please refresh and ensure your photo is clear and well-lit.</span>
+                    <span class="block sm:inline">Could not complete the color analysis. This usually means the image was too dark, blurry, or the API call timed out. Please try again with a better quality photo.</span>
                     </div>
                 `;
                 document.getElementById('next-btn').disabled = true;
@@ -671,22 +592,7 @@
             }
         }
 
-        // --- NEW FUNCTIONALITY ---
-
-        function logout() {
-            // Clear login-related data
-            localStorage.removeItem('isLoggedIn');
-            // Reset application state
-            currentStep = 0;
-            imageBase64 = null;
-            
-            // Hide everything and navigate to the login page (which handles the display)
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('result-container').classList.add('hidden');
-            document.getElementById('header-actions').classList.add('hidden'); 
-            
-            showLogin();
-        }
+        // --- NEW FUNCTIONALITY (Simplified) ---
 
         function startOver() {
             // Reset analysis state
@@ -706,102 +612,16 @@
             if (imageInput) imageInput.value = '';
         }
 
-        // --- LOGIN/REGISTER FUNCTIONS ---
-
-        function register() {
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            const errorDisplay = document.getElementById('register-error');
-
-            if (localStorage.getItem('userEmail')) {
-                errorDisplay.textContent = "An account already exists. Please log in.";
-                errorDisplay.style.display = 'block';
-                return false;
-            }
-
-            // Mock registration: Save credentials to Local Storage
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userPassword', password);
-            
-            alert("Registration successful! You can now log in.");
-            showLogin();
-            return false;
-        }
-
-        function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const errorDisplay = document.getElementById('login-error');
-
-            const storedEmail = localStorage.getItem('userEmail');
-            const storedPassword = localStorage.getItem('userPassword');
-
-            if (email === storedEmail && password === storedPassword && storedEmail && storedPassword) {
-                errorDisplay.style.display = 'none';
-                localStorage.setItem('isLoggedIn', 'true'); // Set a logged-in flag
-                showAnalyzer();
-            } else {
-                errorDisplay.textContent = "Invalid email or password. Please check your details or register.";
-                errorDisplay.style.display = 'block';
-            }
-            return false;
-        }
-
-
-        function showAnalyzer() {
-            // Ensure login/register/result forms are hidden
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('register-container').classList.add('hidden'); 
-            document.getElementById('result-container').classList.add('hidden');
-            
-            // Show quiz/analyzer sections
-            document.getElementById('quiz-container').classList.remove('hidden');
-            document.getElementById('quiz-content').classList.remove('hidden');
-            document.getElementById('header-actions').classList.remove('hidden'); // Show logout button
-            renderStep(currentStep);
-        }
-
-        function showLogin() {
-            // Hide register and analysis pages
-            document.getElementById('register-container').classList.add('hidden');
-            document.getElementById('quiz-container').classList.add('hidden'); 
-            document.getElementById('result-container').classList.add('hidden');
-
-            // Show login page
-            document.getElementById('login-container').classList.remove('hidden');
-            document.getElementById('login-error').style.display = 'none';
-            document.getElementById('header-actions').classList.add('hidden'); // Hide logout button
-        }
-
-        function showRegister() {
-            // Hide login and analysis pages
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('quiz-container').classList.add('hidden'); 
-            document.getElementById('result-container').classList.add('hidden');
-
-            // Show register page
-            document.getElementById('register-container').classList.remove('hidden');
-            document.getElementById('register-error').style.display = 'none';
-            document.getElementById('header-actions').classList.add('hidden'); // Hide logout button
-        }
-
         // Initialize the app
         window.onload = () => {
-             // Check if user is registered at all
-             if (localStorage.getItem('userEmail')) {
-                // If registered and has a logged-in flag (for refreshing during a session), show analyzer
-                if (localStorage.getItem('isLoggedIn') === 'true') {
-                    showAnalyzer();
-                } else {
-                    showLogin();
-                }
-             } else {
-                showRegister();
-             }
+             // Directly show the analyzer/upload page
+             document.getElementById('quiz-container').classList.remove('hidden');
+             renderStep(currentStep);
         };
     </script>
 </body>
-
 </html>
+</html>
+
 
 
